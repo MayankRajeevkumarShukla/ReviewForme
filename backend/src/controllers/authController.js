@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const { User, Organization, Feedback } = require("../models/User");
 const bcrypt = require("bcryptjs");
 require('dotenv').config();
 exports.signup = async (req, res) => {
@@ -48,6 +48,14 @@ exports.getProfile = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+exports.getFeedback = async (req, res) => {
+  try {
+    const feedback = await Feedback.find({ organization: req.user.userId });
+    res.json(feedback);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
