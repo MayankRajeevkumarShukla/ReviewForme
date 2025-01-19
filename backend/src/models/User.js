@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, trim: true, index: true },
-    password: { type: String, required: true, minlength: 6 },  // Hash this before saving
+    password: { type: String, required: true, minlength: 6 }, 
     email: { type: String, required: true, unique: true, lowercase: true },
     role: { type: String, enum: ['admin', 'member'], default: 'member' },
     createdAt: { type: Date, default: Date.now }
@@ -10,12 +10,12 @@ const userSchema = new mongoose.Schema({
 
 const organizationSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    password: { type: String, required: true },  // Hash this before saving
+    password: { type: String, required: true },
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     orgURL: { type: String, unique: true },
     slug: { type: String, unique: true },
-    logo: { type: String },  // URL for the organization logo
-    theme: { type: String, default: 'default' },  // Light/Dark mode or themes
+    logo: { type: String }, 
+    theme: { type: String, default: 'default' },
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -25,7 +25,7 @@ const feedbackSchema = new mongoose.Schema({
     organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
     submitterName: { type: String },
     submitterEmail: { type: String },
-    media: [{ type: String }],  // URLs of images/videos
+    media: [{ type: String }],  
     isPublic: { type: Boolean, default: true },
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     date: { type: Date, default: Date.now }
