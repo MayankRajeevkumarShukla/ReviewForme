@@ -3,7 +3,7 @@ const { User, Organization, Feedback } = require("../models");
 const bcrypt = require("bcryptjs");
 require('dotenv').config();
 exports.signup = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, userename } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -11,7 +11,7 @@ exports.signup = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ email, password: hashPassword, name });
+    const newUser = new User({ email, password: hashPassword, userename });
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -53,10 +53,16 @@ exports.getProfile = async (req, res) => {
   }
 };
 exports.getFeedback = async (req, res) => {
-  try {
-    const feedback = await Feedback.find({ organization: req.user.userId });
+ try {
+   const {organizationID} = req.params.ID
+   const {organization}= await Organization.findById(organization)
+   if(!organization) return res.status(404).json({ message: "Organization not found" }); 
+   if(!organization.user.includes(req.user.userId)){
+    return res.status(403).json({ message: "Access denied" });
+   }
+   const feedback = await Feedback.find({ organization: organizationId });
     res.json(feedback);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
+ } catch (error) {
+  res.status(500).json({message:"Server error",error})
+ }
 };
