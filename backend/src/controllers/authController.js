@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User, Organization, Feedback } = require("../models");
+const { User, Organization, Feedback } = require("../models/User");
 const bcrypt = require("bcryptjs");
 require('dotenv').config();
 exports.signup = async (req, res) => {
@@ -42,6 +42,17 @@ exports.logout = async (req, res) => {
     message: "Logged out successfully. Remove the token on client side.",
   });
 };
+exports.sendFeedback = async(req,res)=>{
+  const {content,rating,organization,submitterName,submitterEmail,media,isPublic,status,date} = req.body
+  try {
+    if(!content||!rating||!organization||!submitterName||!submitterEmail||!status||!date) res.send("the above field is required")
+      const feedback = new Feedback({content,rating,organization,submitterName,submitterEmail,media,isPublic,status,date})
+     await feedback.save()
+     res.status(201).json({message:"Feedback sent succesfully"})
+    } catch (error) {
+    res.status(500).json({message:"Server issue"})
+  }
+}
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
@@ -54,15 +65,18 @@ exports.getProfile = async (req, res) => {
 };
 exports.getFeedback = async (req, res) => {
  try {
-   const {organizationID} = req.params.ID
+   const {organizationID} = req.params
    const {organization}= await Organization.findById(organization)
    if(!organization) return res.status(404).json({ message: "Organization not found" }); 
    if(!organization.user.includes(req.user.userId)){
     return res.status(403).json({ message: "Access denied" });
    }
-   const feedback = await Feedback.find({ organization: organizationId });
+   const feedback = await Feedback.find({ organization: organizationID });
     res.json(feedback);
  } catch (error) {
   res.status(500).json({message:"Server error",error})
  }
 };
+
+
+
