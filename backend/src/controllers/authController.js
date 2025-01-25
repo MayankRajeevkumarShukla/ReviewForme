@@ -3,7 +3,7 @@ const { User, Organization, Feedback } = require("../models/User");
 const bcrypt = require("bcryptjs");
 require('dotenv').config();
 exports.signup = async (req, res) => {
-  const { email, password, userename } = req.body;
+  const { email, password, username } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -11,7 +11,7 @@ exports.signup = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ email, password: hashPassword, userename });
+    const newUser = new User({ email, password: hashPassword, username });
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -45,7 +45,7 @@ exports.logout = async (req, res) => {
 exports.sendFeedback = async(req,res)=>{
   const {content,rating,organization,submitterName,submitterEmail,media,isPublic,status,date} = req.body
   try {
-    if(!content||!rating||!organization||!submitterName||!submitterEmail||!status||!date) res.send("the above field is required")
+    if(!content||!rating||!organization||!submitterName||!submitterEmail||!status||!date) res.send("the above field is required");
       const feedback = new Feedback({content,rating,organization,submitterName,submitterEmail,media,isPublic,status,date})
      await feedback.save()
      res.status(201).json({message:"Feedback sent succesfully"})
@@ -66,7 +66,7 @@ exports.getProfile = async (req, res) => {
 exports.getFeedback = async (req, res) => {
  try {
    const {organizationID} = req.params
-   const {organization}= await Organization.findById(organization)
+   const {organization}= await Organization.findById(organizationID)
    if(!organization) return res.status(404).json({ message: "Organization not found" }); 
    if(!organization.user.includes(req.user.userId)){
     return res.status(403).json({ message: "Access denied" });
