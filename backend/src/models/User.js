@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
 
 const organizationSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    password: { type: String, required: true },
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     orgURL: { type: String, unique: true },
     slug: { type: String, unique: true },
