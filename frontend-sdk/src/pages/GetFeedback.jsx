@@ -10,7 +10,7 @@ const GetFeedback = ({ organizationID }) => {
     const fetchFeedback = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/feedback?organizationID=${organizationID}`,
+          `http://localhost:8000/feedback?organizationID=${organizationID}`,
           { withCredentials: true }
         );
         setFeedback(response.data.feedback);
