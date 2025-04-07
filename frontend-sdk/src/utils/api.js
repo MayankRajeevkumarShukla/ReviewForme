@@ -33,4 +33,4 @@ export const getProfile = async (token) => {
     } catch (error) {
       throw error.response ? error.response.data : error;
     }
-  };
+  } ;
